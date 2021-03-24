@@ -23,6 +23,11 @@ const db = require('./models/index');
     console.log('error loading db: ' + err.message);
   }
 })();
+const users = require('./routes/users');
+const courses = require('./routes/courses');
+
+app.use('/api/users', users);
+app.use('/api/courses', courses);
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
