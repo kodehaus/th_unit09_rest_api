@@ -4,15 +4,18 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon ./app.js",
+    "start": "node ./app.js",
     "seed": "cross-env DB_ENABLE_LOGGING=true node './seed'",
-    "test": "node ./test/executeTest"
+    "test": "mocha ./test/newTest.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
     "nodemon": "^1.18.3",
+    "procmonrest": "^0.3.0",
     "th_unit09_unit_tests": "file:../th_unit09_unit_tests"
   },
   "dependencies": {
@@ -24,5 +27,11 @@
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
     "sqlite3": "^5.0.0"
+  },
+  "semistandard": {
+    "env": [
+      "chai",
+      "mocha"
+    ]
   }
 }
