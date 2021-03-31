@@ -3,13 +3,15 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // create the Express app
 const app = express();
-
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 const db = require('./models/index');

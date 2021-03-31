@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const bcrypt = require('bcryptjs');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -61,8 +62,11 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate:
-      {
+      set(val) {
+        const hashedPassword = bcrypt.hashSync(val, 10);
+        this.setDataValue('password', hashedPassword);
+      },
+      validate: {
         notEmpty: {
           msg: 'Password can not be empty. Please provide a value for the "password".'
         },
@@ -76,7 +80,9 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User'
   });
   User.associate = (models) => {
-    User.hasMany(models.Course);
+    User.hasMany(models.Course, {
+      foreignKey: 'userid'
+    });
   };
   return User;
 };

@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js",
+    "start": "nodemon ./app.js",
     "seed": "cross-env DB_ENABLE_LOGGING=true node './seed'",
     "test": "mocha ./test/newTest.js"
   },
@@ -19,6 +19,7 @@
     "th_unit09_unit_tests": "file:../th_unit09_unit_tests"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
