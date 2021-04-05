@@ -3,7 +3,8 @@ var router = express.Router();
 const { Course } = require('../models');
 const { authenticateUser } = require('../middleware/auth-user');
 const   { asyncHandler } = require('../middleware/errorHandler');
-const  { propertyFilter } = require('../middleware/propertyFilter')
+const  { propertyFilter } = require('../middleware/propertyFilter');
+const { response } = require('express');
 
 
 const courseRequestHandler =  (cb) => {
@@ -13,7 +14,6 @@ const courseRequestHandler =  (cb) => {
     } catch(error) {
       let err = new Error('There was a problem processing your Course API request');
       if ((error.name == 'SequelizeForeignKeyConstraintError')  || (error.name == 'SequelizeValidationError')) {
-        console.dir(error)
         if(error.errors){
           err.errors = error.errors;
         } else {
@@ -74,6 +74,11 @@ router.post('/', authenticateUser, courseRequestHandler(async function (req, res
 /* PUT  */
 router.put('/:id', authenticateUser, courseRequestHandler(async function (req, res, next) {
   let course = await Course.findByPk(req.params.id);
+  if(course.userId != req.currentUser.id){
+    const authErr = new Error('Unauthorized resource access');
+    authErr.status = 403;
+    next(authErr)
+  }
   if(course){
     await Course.update(req.body,
     {
@@ -88,17 +93,15 @@ router.put('/:id', authenticateUser, courseRequestHandler(async function (req, r
 /* DELETE  */
 router.put('/:id/delete', authenticateUser, courseRequestHandler(async function (req, res, next) {
   let course = await Course.findByPk(req.params.id);
+  if(course.userId != req.currentUser.id){
+    const authErr = new Error('Unauthorized resource access');
+    authErr.status = 403;
+    next(authErr)
+  }
   if(course){
-    if((course.userId === + req.currentUser.id)){
       const courseTitle = course.title;
       await course.destroy();
       res.status(204).location('/').end();
-    } else if(course.userId !== req.currentUser.id){
-      let authErr = new Error('unable to update resource');
-      authErr.status = 403;
-      next(authErr);
-    } 
-
   } else {
     next();
   }

@@ -57,7 +57,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         notNull: {
           msg: 'The value for the "emailAddress" can not be null.'
-        }
+        },
+        isEmail: true
       }
     },
     password: {
