@@ -28,20 +28,19 @@ const db = require('./models/index');
 const users = require('./routes/users');
 const courses = require('./routes/courses');
 
-app.use('/api/users', users);
-app.use('/api/courses', courses);
-
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the REST API project!',
   });
 });
+app.use('/api/users', users);
+app.use('/api/courses', courses);
 
 // send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
-    message: 'Route Not Found',
+    message: 'Resource Not Found',
   });
 });
 
@@ -50,11 +49,18 @@ app.use((err, req, res, next) => {
   if (enableGlobalErrorLogging) {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
+  let errorMessages = null;
+  if(err.errors){
+    errorMessages = err.errors.map((erroObj) => {return {"message": erroObj.message}})
+  } else {
+    errorMessages = err.message;
+  }
 
   res.status(err.status || 500).json({
     message: err.message,
-    error: {},
+    error: errorMessages,
   });
+
 });
 
 // set our port
